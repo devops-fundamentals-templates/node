@@ -36,14 +36,14 @@ const db = new sqlite3.Database("softserve.db", (err) => {
 
 // CREATE
 app.post("/products", (req, res) => {
-  const { title, price } = req.body;
-  if (typeof title === undefined || price === undefined) {
+  const { name, price } = req.body;
+  if (typeof name === undefined || price === undefined) {
     res.status(400).json({ error: "Invalid data format" });
     return;
   }
 
-  const sql = `INSERT INTO products (title,  price) VALUES (?, ?)`;
-  db.run(sql, [title, price], function (err) {
+  const sql = `INSERT INTO products (name,  price) VALUES (?, ?)`;
+  db.run(sql, [name, price], function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -87,7 +87,7 @@ app.get("/products/:id", (req, res) => {
 // UPDATE
 app.patch("/products/:id", (req, res) => {
   const id = req.params.id;
-  const selectSqlGet = "SELECT title, price FROM products WHERE id = ?";
+  const selectSqlGet = "SELECT name, price FROM products WHERE id = ?";
   db.get(selectSqlGet, [id], (err, row) => {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -97,10 +97,10 @@ app.patch("/products/:id", (req, res) => {
       res.status(404).json({ error: "Product not found" });
       return;
     }
-    const title = req.body.title || row.title;
+    const name = req.body.name || row.name;
     const price = req.body.price || row.price;
-    const sqlWrite = `UPDATE products SET title = ?, price = ? WHERE id = ?`;
-    db.run(sqlWrite, [title, price, id], function (err) {
+    const sqlWrite = `UPDATE products SET name = ?, price = ? WHERE id = ?`;
+    db.run(sqlWrite, [name, price, id], function (err) {
       if (err) {
         res.status(500).json({ error: err.message });
         return;
